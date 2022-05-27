@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Heptathlon Calculator</title>
+    <meta name="description" content="Heptathlon Calculator" />
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body id="app-container">
+    <main id="main" role="main">
+      <header role="banner">
+        <h3 style="margin-top: 0">
+          <a href="#" title="Home">Heptathlon Calculator</a>
+          <br /><small>Women's outdoor heptathlon score calculator!</small>
+        </h3>
+      </header>
+      <hr />
+
+      <article id="article"></article>
+
+      <footer role="contentinfo">
+        <hr />
+
+        <nav style="margin-bottom: 1rem" role="navigation">
+          <a href="https://github.com/carpetscheme/heptathlon"
+            >Source on Github</a
+          >
+        </nav>
+      </footer>
+    </main>
+
+    <!-- Include Scala.js compiled code -->
+    <script
+      type="text/javascript"
+      src="../target/scala-2.13/heptathlon-fastopt/main.js"
+    ></script>
+  </body>
+</html>

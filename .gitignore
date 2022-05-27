@@ -1,0 +1,8 @@
+target/
+.sbtopts
+.metals/
+.bsp/
+.bloop/
+metals.sbt
+.vscode
+node_modules/
