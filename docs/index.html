@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
 
-  <body id="app-container">
+  <body>
     <main id="main" role="main">
       <header role="banner">
         <h3 style="margin-top: 0">
@@ -19,24 +19,21 @@
         </h3>
       </header>
       <hr />
-
-      <article id="article"></article>
-
-      <footer role="contentinfo">
-        <hr />
-
-        <nav style="margin-bottom: 1rem" role="navigation">
-          <a href="https://github.com/carpetscheme/heptathlon"
-            >Source on Github</a
-          >
-        </nav>
-      </footer>
     </main>
+    <footer role="contentinfo">
+      <hr />
+
+      <nav style="margin-bottom: 1rem" role="navigation">
+        <a href="https://github.com/carpetscheme/heptathlon"
+          >Source on Github</a
+        >
+      </nav>
+    </footer>
 
     <!-- Include Scala.js compiled code -->
     <script
       type="text/javascript"
-      src="../target/scala-2.13/heptathlon-fastopt/main.js"
+      src="../target/scala-2.13/scalajs-bundler/main/heptathlon-fastopt-bundle.js"
     ></script>
   </body>
 </html>

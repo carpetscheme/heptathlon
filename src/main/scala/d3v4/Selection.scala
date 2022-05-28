@@ -25,8 +25,8 @@ object d3selection extends js.Object {
     def on(typenames: String, listener: ListenerFunction1): T = js.native
     def on(typenames: String, listener: ListenerFunction2): T = js.native
 
-    def data(): js.Array[Datum]                                                                        = js.native
-    def data[NewDatum <: Datum](data: js.Array[NewDatum]): Update[NewDatum]                            = js.native
+    def data(): js.Array[Datum]                                             = js.native
+    def data[NewDatum <: Datum](data: js.Array[NewDatum]): Update[NewDatum] = js.native
     // TODO: d3 doc says that key can be a ThisFunction with this as the current node. It Doesn't work here...
     def data[NewDatum <: Datum, R](data: js.Array[NewDatum], key: ValueFunction0[R]): Update[NewDatum] = js.native
     def data[NewDatum <: Datum, R](data: js.Array[NewDatum], key: ValueFunction1[R]): Update[NewDatum] = js.native
@@ -106,7 +106,9 @@ object d3selection extends js.Object {
   trait Selection[Datum] extends BaseSelection[Datum, Selection[Datum]] {
     def select[SelData](selector: String): Selection[SelData]    = js.native
     def selectAll[SelData](selector: String): Selection[SelData] = js.native
-    def node(): dom.EventTarget                                  = js.native
+    def node(): dom.EventTarget
+
+    def merge(other: Update[Datum]): Selection[Datum] = js.native
 
     /** @see [[d3transition]] */
     def transition(): Transition[Datum] = js.native

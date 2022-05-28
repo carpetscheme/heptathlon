@@ -90,4 +90,6 @@ object Events {
     C = 1.88
   )
 
+  val allEvents = List(HundredHurdles, HighJump, ShotPut, TwoHundred, LongJump, Javelin, EightHundred)
+
 }

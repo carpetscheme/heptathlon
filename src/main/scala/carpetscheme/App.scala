@@ -5,6 +5,10 @@ import org.scalajs.dom
 import scala.util.Try
 import scala.util.Failure
 import scala.util.Success
+import d3v4._
+import com.raquo.laminar.nodes.ReactiveHtmlElement
+import com.raquo.laminar.nodes.ParentNode
+import com.raquo.airstream.ownership.ManualOwner
 
 object App {
 
@@ -36,9 +40,7 @@ object App {
       )
     )
 
-  val inputVars: List[Var[Long]] = List(Var(0L), Var(0L), Var(0L), Var(0L), Var(0L), Var(0L), Var(0L))
-
-  val appDiv =
+  def createTable(inputVars: List[Var[Long]]) =
     table(
       thead(
         tr(
@@ -68,6 +70,32 @@ object App {
       )
     )
 
+  val inputVarsOne: List[Var[Long]] = List(Var(0L), Var(0L), Var(0L), Var(0L), Var(0L), Var(0L), Var(0L))
+  val inputVarsTwo: List[Var[Long]] = List(Var(0L), Var(0L), Var(0L), Var(0L), Var(0L), Var(0L), Var(0L))
+
+  val comb: Signal[List[Long]] = Signal.combineSeq(inputVarsOne.map(_.signal)).map(_.toList)
+
+  val allAthletes = article(
+    details(
+      cls("start-open"),
+      summary("Athlete A"),
+      createTable(inputVarsOne)
+    ),
+    details(
+      summary("Athlete B"),
+      createTable(inputVarsTwo)
+    ),
+    hr()
+  )
+
   def main(args: Array[String]): Unit =
-    renderOnDomContentLoaded(dom.document.querySelector("#article"), appDiv)
+    documentEvents.onDomContentLoaded.foreach { _ =>
+      val appContainer = dom.document.querySelector("#main")
+      render(appContainer, allAthletes)
+      dom.document.querySelector(".start-open").setAttribute("open", "")
+      val svg            = BarChart.buildChart()
+      implicit val owner = new ManualOwner
+      comb.foreach(data => BarChart.update(svg, data))
+    }(unsafeWindowOwner)
+
 }

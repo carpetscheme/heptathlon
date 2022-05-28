@@ -46,7 +46,7 @@ object d3scale extends js.Object {
 
   @js.native
   trait OrdinalScale extends Scale {
-    def apply(values: js.Array[String]): this.type  = js.native
+    def apply(value: String): Double                = js.native
     def domain(values: js.Array[String]): this.type = js.native
     def range(range: js.Array[Double]): this.type   = js.native
   }
@@ -54,6 +54,7 @@ object d3scale extends js.Object {
   @js.native
   trait BandScale extends OrdinalScale {
     def padding(value: Double): this.type = js.native
+    def bandwidth(): Double               = js.native
   }
 
 }
