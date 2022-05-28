@@ -24,7 +24,7 @@ object BarChart {
 
   val yScale = d3
     .scaleLinear()
-    .domain(js.Array(0, 500))
+    .domain(js.Array(0, 1500))
     .range(js.Array(height, 0))
 
   def buildChart(): d3selection.Selection[EventTarget] = {

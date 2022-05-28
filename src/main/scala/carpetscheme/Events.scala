@@ -21,7 +21,15 @@ object Events {
       A: Double,
       B: Double,
       C: Double
-  )
+  ) {
+    def points(result: Double): Long = this.`type` match {
+      case Running => runningPoints(result, this.A, this.B, this.C)
+      case _       => throwingJumpingPoints(result, this.A, this.B, this.C)
+    }
+
+    def max: Option[Double] = if (this.`type` == Running) Some(this.B) else None
+
+  }
 
   private def runningPoints(result: Double, a: Double, b: Double, c: Double): Long =
     (a * pow(b - result, c)).floor.toLong

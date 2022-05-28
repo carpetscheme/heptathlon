@@ -15,7 +15,7 @@ object App {
   def pointsHelper(input: String, event: Events.Event): Long =
     Try(input.toDouble) match {
       case Failure(_)     => 0L
-      case Success(value) => Events.calculatePoints(value, event)
+      case Success(value) => event.points(value)
     }
 
   def row(event: Events.Event, inputVar: Var[Long]) =
@@ -25,6 +25,7 @@ object App {
         input(
           typ("number"),
           minAttr("0"),
+          maxAttr(event.max.map(_.toString()).getOrElse("")),
           stepAttr("0.01"),
           width("6rem"),
           onInput.mapToValue.map(s => pointsHelper(s, event)) --> inputVar
@@ -50,13 +51,7 @@ object App {
         )
       ),
       tbody(
-        row(Events.HundredHurdles, inputVars(0)),
-        row(Events.HighJump, inputVars(1)),
-        row(Events.ShotPut, inputVars(2)),
-        row(Events.TwoHundred, inputVars(3)),
-        row(Events.LongJump, inputVars(4)),
-        row(Events.Javelin, inputVars(5)),
-        row(Events.EightHundred, inputVars(6)) // TODO: minutes and seconds
+        (Events.allEvents zip inputVars).map(p => row(p._1, p._2))
       ),
       tfoot(
         tr(
