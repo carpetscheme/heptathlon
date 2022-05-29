@@ -65,20 +65,27 @@ object App {
       )
     )
 
-  val inputVarsOne: List[Var[Long]] = List(Var(0L), Var(0L), Var(0L), Var(0L), Var(0L), Var(0L), Var(0L))
-  val inputVarsTwo: List[Var[Long]] = List(Var(0L), Var(0L), Var(0L), Var(0L), Var(0L), Var(0L), Var(0L))
+  val nameA                       = "Athlete A"
+  val nameB                       = "Athlete B"
+  val inputVarsA: List[Var[Long]] = List(Var(0L), Var(0L), Var(0L), Var(0L), Var(0L), Var(0L), Var(0L))
+  val inputVarsB: List[Var[Long]] = List(Var(0L), Var(0L), Var(0L), Var(0L), Var(0L), Var(0L), Var(0L))
 
-  val comb: Signal[List[Long]] = Signal.combineSeq(inputVarsOne.map(_.signal)).map(_.toList)
+  val athleteAComb: Signal[BarChart.AthleteResult] =
+    Signal.combineSeq(inputVarsA.map(_.signal)).map(r => BarChart.AthleteResult(nameA, r))
+  val athleteBComb: Signal[BarChart.AthleteResult] =
+    Signal.combineSeq(inputVarsB.map(_.signal)).map(r => BarChart.AthleteResult(nameB, r))
+
+  val tester: Signal[Seq[BarChart.AthleteResult]] = Signal.combineSeq(List(athleteAComb, athleteBComb))
 
   val allAthletes = article(
     details(
       cls("start-open"),
-      summary("Athlete A"),
-      createTable(inputVarsOne)
+      summary(nameA),
+      createTable(inputVarsA)
     ),
     details(
-      summary("Athlete B"),
-      createTable(inputVarsTwo)
+      summary(nameB),
+      createTable(inputVarsB)
     ),
     hr()
   )
@@ -88,9 +95,15 @@ object App {
       val appContainer = dom.document.querySelector("#main")
       render(appContainer, allAthletes)
       dom.document.querySelector(".start-open").setAttribute("open", "")
-      val svg            = BarChart.buildChart()
+
       implicit val owner = new ManualOwner
-      comb.foreach(data => BarChart.update(svg, data))
+
+      val xScale = BarChart.xScale(List(nameA, nameB))
+      val svg    = BarChart.buildChart(xScale)
+      Signal
+        .combineSeq(List(athleteAComb, athleteBComb))
+        .foreach(data => BarChart.update(svg, xScale, data))
+
     }(unsafeWindowOwner)
 
 }

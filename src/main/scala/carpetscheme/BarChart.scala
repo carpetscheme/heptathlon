@@ -14,9 +14,13 @@ object BarChart {
   val width        = 460 - marginLeft - marginRight
   val height       = 400 - marginTop - marginBottom
 
-  val xScale = d3
+  val blocks                         = Events.allEvents.map(_.name).toJSArray
+  val colours                        = List("#864b17", "#fc8810", "#edd41a", "#f9f171", "#98c25f", "#5d913b", "#fc6515")
+  val colourMap: Map[String, String] = (blocks zip colours).toMap
+
+  def xScale(athletes: List[String]): d3scale.BandScale = d3
     .scaleBand()
-    .domain(js.Array("Athlete A", "Athlete B"))
+    .domain(athletes.toJSArray)
     .range(js.Array(0, width))
     .padding(0.2)
 
@@ -25,11 +29,7 @@ object BarChart {
     .domain(js.Array(0, 8000))
     .range(js.Array(height, 0))
 
-  val blocks                         = Events.allEvents.map(_.name).toJSArray
-  val colours                        = List("#864b17", "#fc8810", "#edd41a", "#f9f171", "#98c25f", "#5d913b", "#fc6515")
-  val colourMap: Map[String, String] = (blocks zip colours).toMap
-
-  def buildChart(): d3selection.Selection[EventTarget] = {
+  def buildChart(xScale: d3scale.BandScale): d3selection.Selection[EventTarget] = {
 
     val svg = d3
       .select("#main")
@@ -66,28 +66,32 @@ object BarChart {
 
   case class AthleteResult(
       name: String,
-      results: List[Long]
+      results: Seq[Long]
   )
 
   def convertToInnerDatums(res: AthleteResult): js.Array[InnerDatum] = {
-    val cummalativeResults: List[Long] = res.results.scanLeft(0L)(_ + _).dropRight(0)
+    val cummalativeResults: Seq[Long] = res.results.scanLeft(0L)(_ + _).dropRight(0)
 
     (cummalativeResults zip res.results).map { case (l, r) =>
       InnerDatum(l, l + r, res.name)
     }.toJSArray
   }
 
-  def createStackedData(in: List[AthleteResult]): js.Array[StackedDatum] =
+  def createStackedData(in: Seq[AthleteResult]): js.Array[StackedDatum] =
     in.map(convertToInnerDatums)
       .flatMap(blocks zip _)
       .groupMap(_._1)(_._2)
-      .toList
+      .toSeq
       .map { case (event, data) => StackedDatum(event, data.toJSArray) }
       .toJSArray
 
-  def update(svg: d3selection.Selection[EventTarget], results: List[Long]): Unit = {
+  def update(
+      svg: d3selection.Selection[EventTarget],
+      xScale: d3scale.BandScale,
+      results: Seq[AthleteResult]
+  ): Unit = {
 
-    val stackedData = createStackedData(List(AthleteResult("Athlete A", results)))
+    val stackedData = createStackedData(results)
 
     val u = svg
       .selectAll("g")
