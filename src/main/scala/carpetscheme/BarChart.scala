@@ -24,17 +24,19 @@ object BarChart {
 
   val yScale = d3
     .scaleLinear()
-    .domain(js.Array(0, 1500))
+    .domain(js.Array(0, 8000))
     .range(js.Array(height, 0))
 
   def buildChart(): d3selection.Selection[EventTarget] = {
 
     val svg = d3
       .select("#main")
+      .append("div")
+      .classed("svg-container", true)
       .append("svg")
-      .attr("width", width + marginLeft + marginRight)
-      .attr("height", height + marginTop + marginBottom)
-      .attr("style", "display: block; margin: 2rem auto;")
+      .attr("preserveAspectRatio", "xMinYMin meet")
+      .attr("viewBox", "0 0 460 400")
+      .classed("svg-content-responsive", true)
       .append("g")
       .attr("transform", "translate(" + marginLeft + "," + marginTop + ")")
 

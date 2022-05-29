@@ -6,13 +6,13 @@ class EventsTest extends munit.FunSuite {
 
   test("Caclculate total points") {
     val results: List[Long] = List(
-      calculatePoints(13.77, HundredHurdles),
-      calculatePoints(188, HighJump),
-      calculatePoints(13.15, ShotPut),
-      calculatePoints(23.73, TwoHundred),
-      calculatePoints(661, LongJump),
-      calculatePoints(50.73, Javelin),
-      calculatePoints(131.53, EightHundred)
+      HundredHurdles.points(13.77),
+      HighJump.points(1.88),
+      ShotPut.points(13.15),
+      TwoHundred.points(23.73),
+      LongJump.points(6.61),
+      Javelin.points(50.73),
+      EightHundred.points(131.53)
     )
 
     val expectedPoints = List(
@@ -26,13 +26,13 @@ class EventsTest extends munit.FunSuite {
 
     test("Caclculate total points again") {
     val results: List[Long] = List(
-      calculatePoints(13.05, HundredHurdles),
-      calculatePoints(167, HighJump),
-      calculatePoints(12.87, ShotPut),
-      calculatePoints(22.92, TwoHundred),
-      calculatePoints(645, LongJump),
-      calculatePoints(48.74, Javelin),
-      calculatePoints(134.24, EightHundred)
+      HundredHurdles.points(13.05),
+      HighJump.points(1.67),
+      ShotPut.points(12.87),
+      TwoHundred.points(22.92),
+      LongJump.points(6.45),
+      Javelin.points(48.74),
+      EightHundred.points(134.24)
     )
 
     val expectedPoints = List(

@@ -10,10 +10,16 @@ object Events {
   case object Throwing extends EventType
 
   def unit(event: EventType) = event match {
-    case Jumping  => "cm"
     case Running  => "s"
+    case Jumping  => "m"
     case Throwing => "m"
   }
+
+  private def runningPoints(result: Double, a: Double, b: Double, c: Double): Long =
+    (a * pow(b - result, c)).floor.toLong
+
+  private def throwingJumpingPoints(result: Double, a: Double, b: Double, c: Double): Long =
+    (a * pow(result - b, c)).floor.toLong
 
   case class Event(
       name: String,
@@ -23,23 +29,13 @@ object Events {
       C: Double
   ) {
     def points(result: Double): Long = this.`type` match {
-      case Running => runningPoints(result, this.A, this.B, this.C)
-      case _       => throwingJumpingPoints(result, this.A, this.B, this.C)
+      case Running  => runningPoints(result, this.A, this.B, this.C)
+      case Jumping  => throwingJumpingPoints(result * 100, this.A, this.B, this.C)
+      case Throwing => throwingJumpingPoints(result, this.A, this.B, this.C)
     }
 
     def max: Option[Double] = if (this.`type` == Running) Some(this.B) else None
 
-  }
-
-  private def runningPoints(result: Double, a: Double, b: Double, c: Double): Long =
-    (a * pow(b - result, c)).floor.toLong
-
-  private def throwingJumpingPoints(result: Double, a: Double, b: Double, c: Double): Long =
-    (a * pow(result - b, c)).floor.toLong
-
-  def calculatePoints(result: Double, event: Event): Long = event.`type` match {
-    case Running => runningPoints(result, event.A, event.B, event.C)
-    case _       => throwingJumpingPoints(result, event.A, event.B, event.C)
   }
 
   val HundredHurdles = Event(
