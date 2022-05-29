@@ -33,6 +33,8 @@ object d3selection extends js.Object {
     def data[NewDatum <: Datum, R](data: js.Array[NewDatum], key: ValueFunction2[R]): Update[NewDatum] = js.native
     def data[NewDatum <: Datum, R](data: js.Array[NewDatum], key: ValueFunction3[R]): Update[NewDatum] = js.native
 
+    def data[NewDatum <: Datum, R](key: ValueFunction1[R]): Update[NewDatum] = js.native
+
     def each[C <: CurrentDom](function: ListenerThisFunction0[C]): Unit = js.native
     def each[C <: CurrentDom](function: ListenerThisFunction1[C]): Unit = js.native
     def each[C <: CurrentDom](function: ListenerThisFunction2[C]): Unit = js.native
