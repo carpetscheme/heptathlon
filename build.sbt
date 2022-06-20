@@ -12,6 +12,7 @@ lazy val root = (project in file("."))
     libraryDependencies ++= Seq(
       "com.raquo"     %%% "laminar"  % "0.14.2",
       "com.raquo"     %%% "domtypes" % "0.15.1",
+      "be.doeraene"   %%% "url-dsl"  % "0.4.0",
       "org.scalameta" %%% "munit"    % "0.7.29" % Test
     )
   )

@@ -6,7 +6,9 @@ import d3v4._
 import com.raquo.laminar.nodes.ReactiveHtmlElement
 import com.raquo.laminar.nodes.ParentNode
 import com.raquo.airstream.ownership.ManualOwner
+import urldsl.language.QueryParameters.simpleParamErrorImpl._
 import carpetscheme.Events._
+import scala.collection.immutable
 
 object App {
 
@@ -76,40 +78,48 @@ object App {
       )
     )
 
-  val nameA                       = "Athlete A"
-  val nameB                       = "Athlete B"
-  val inputVarsA: List[Var[Long]] = List(Var(0L), Var(0L), Var(0L), Var(0L), Var(0L), Var(0L), Var(0L))
-  val inputVarsB: List[Var[Long]] = List(Var(0L), Var(0L), Var(0L), Var(0L), Var(0L), Var(0L), Var(0L))
-
-  val athleteAComb: Signal[BarChart.AthleteResult] =
-    Signal.combineSeq(inputVarsA.map(_.signal)).map(r => BarChart.AthleteResult(nameA, r))
-  val athleteBComb: Signal[BarChart.AthleteResult] =
-    Signal.combineSeq(inputVarsB.map(_.signal)).map(r => BarChart.AthleteResult(nameB, r))
-
-  val tester: Signal[Seq[BarChart.AthleteResult]] = Signal.combineSeq(List(athleteAComb, athleteBComb))
-
-  val allAthletes = article(
+  def allAthletes(names: List[String], inputVars: List[List[Var[Long]]]) = article(
     details(
       cls("start-open"),
-      summary(nameA),
-      createTable(inputVarsA)
+      summary(names(0)),
+      createTable(inputVars(0))
     ),
     details(
-      summary(nameB),
-      createTable(inputVarsB)
+      summary(names(1)),
+      createTable(inputVars(1))
     ),
     hr()
   )
 
   def main(args: Array[String]): Unit =
     documentEvents.onDomContentLoaded.foreach { _ =>
+      val defaultNames = List("Athlete A", "Athlete B")
+      val athleteNameParams = (listParam[String]("athlete"))
+        .matchRawUrl(dom.document.URL)
+        .map(list =>
+          list.distinct match {
+            case a :: b :: tail => List(a, b)
+            case a :: tail      => List(a, "Athlete B")
+            case immutable.Nil  => defaultNames
+          }
+        )
+        .getOrElse(defaultNames)
+
+      val inputVarsA: List[Var[Long]] = List(Var(0L), Var(0L), Var(0L), Var(0L), Var(0L), Var(0L), Var(0L))
+      val inputVarsB: List[Var[Long]] = List(Var(0L), Var(0L), Var(0L), Var(0L), Var(0L), Var(0L), Var(0L))
+
+      val athleteAComb: Signal[BarChart.AthleteResult] =
+        Signal.combineSeq(inputVarsA.map(_.signal)).map(r => BarChart.AthleteResult(athleteNameParams(0), r))
+      val athleteBComb: Signal[BarChart.AthleteResult] =
+        Signal.combineSeq(inputVarsB.map(_.signal)).map(r => BarChart.AthleteResult(athleteNameParams(1), r))
+
       val appContainer = dom.document.querySelector("#main")
-      render(appContainer, allAthletes)
+      render(appContainer, allAthletes(athleteNameParams, List(inputVarsA, inputVarsB)))
       dom.document.querySelector(".start-open").setAttribute("open", "")
 
       implicit val owner = new ManualOwner
 
-      val xScale = BarChart.xScale(List(nameA, nameB))
+      val xScale = BarChart.xScale(athleteNameParams)
       val svg    = BarChart.buildChart(xScale)
       Signal
         .combineSeq(List(athleteAComb, athleteBComb))
