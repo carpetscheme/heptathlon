@@ -2,34 +2,45 @@ package carpetscheme
 
 import com.raquo.laminar.api.L._
 import org.scalajs.dom
-import scala.util.Try
-import scala.util.Failure
-import scala.util.Success
 import d3v4._
 import com.raquo.laminar.nodes.ReactiveHtmlElement
 import com.raquo.laminar.nodes.ParentNode
 import com.raquo.airstream.ownership.ManualOwner
+import carpetscheme.Events._
 
 object App {
 
-  def pointsHelper(input: String, event: Events.Event): Long =
-    Try(input.toDouble) match {
-      case Failure(_)     => 0L
-      case Success(value) => event.points(value)
+  def buildInput(event: Events.Event, inputVar: Var[Long]): ReactiveHtmlElement[org.scalajs.dom.html.Input] =
+    event.`type` match {
+      case MiddleDistance =>
+        input(
+          minAttr("0"),
+          maxAttr(event.max.map(_.toString()).getOrElse("")),
+          width("6rem"),
+          typ("text"),
+          inputMode("numeric"),
+          onInput.mapToValue
+            .map(_.filter(c => Character.isDigit(c) || c == ':' || c == '.'))
+            .setAsValue
+            .map(s => EightHundredPointsHelper(s)) --> inputVar
+        )
+      case _ =>
+        input(
+          minAttr("0"),
+          maxAttr(event.max.map(_.toString()).getOrElse("")),
+          stepAttr("0.01"),
+          width("6rem"),
+          typ("number"),
+          inputMode("decimal"),
+          onInput.mapToValue.map(s => pointsHelper(s, event)) --> inputVar
+        )
     }
 
   def row(event: Events.Event, inputVar: Var[Long]) =
     tr(
       td(event.name),
       td(
-        input(
-          typ("number"),
-          minAttr("0"),
-          maxAttr(event.max.map(_.toString()).getOrElse("")),
-          stepAttr("0.01"),
-          width("6rem"),
-          onInput.mapToValue.map(s => pointsHelper(s, event)) --> inputVar
-        ),
+        buildInput(event, inputVar),
         span(
           paddingLeft("0.5rem"),
           Events.unit(event.`type`)

@@ -1,18 +1,38 @@
 package carpetscheme
 
 import scala.math.{floor, pow}
+import scala.util.Try
+import scala.util.Failure
+import scala.util.Success
 
 object Events {
 
   sealed trait EventType
-  case object Running  extends EventType
-  case object Jumping  extends EventType
-  case object Throwing extends EventType
+  case object Sprint         extends EventType
+  case object Jumping        extends EventType
+  case object Throwing       extends EventType
+  case object MiddleDistance extends EventType
 
   def unit(event: EventType) = event match {
-    case Running  => "s"
-    case Jumping  => "m"
-    case Throwing => "m"
+    case Sprint         => "s"
+    case Jumping        => "m"
+    case Throwing       => "m"
+    case MiddleDistance => "m:ss"
+  }
+
+  def pointsHelper(in: String, event: Event): Long =
+    Try(in.toDouble).filter(_ != 0.0).map(event.points).getOrElse(0L)
+
+  def EightHundredPointsHelper(in: String): Long = in.split(":") match {
+    case arr if arr.length > 2 => 0L
+    case Array(m, s) =>
+      val comb = for {
+        ms <- Try(m.toDouble).map(_ * 60)
+        ss <- Try(s.toDouble)
+      } yield (ms + ss)
+
+      comb.map(EightHundred.points).getOrElse(0L)
+    case arr => pointsHelper(arr(0), EightHundred)
   }
 
   private def runningPoints(result: Double, a: Double, b: Double, c: Double): Long =
@@ -29,18 +49,18 @@ object Events {
       C: Double
   ) {
     def points(result: Double): Long = this.`type` match {
-      case Running  => runningPoints(result, this.A, this.B, this.C)
       case Jumping  => throwingJumpingPoints(result * 100, this.A, this.B, this.C)
       case Throwing => throwingJumpingPoints(result, this.A, this.B, this.C)
+      case _        => runningPoints(result, this.A, this.B, this.C)
     }
 
-    def max: Option[Double] = if (this.`type` == Running) Some(this.B) else None
+    def max: Option[Double] = if (this.`type` == Sprint) Some(this.B) else None
 
   }
 
   val HundredHurdles = Event(
     name = "100m Hurdles",
-    `type` = Running,
+    `type` = Sprint,
     A = 9.23076,
     B = 26.7,
     C = 1.835
@@ -64,7 +84,7 @@ object Events {
 
   val TwoHundred = Event(
     name = "200m",
-    `type` = Running,
+    `type` = Sprint,
     A = 4.99087,
     B = 42.5,
     C = 1.81
@@ -88,7 +108,7 @@ object Events {
 
   val EightHundred = Event(
     name = "800m",
-    `type` = Running,
+    `type` = MiddleDistance,
     A = 0.11193,
     B = 254,
     C = 1.88

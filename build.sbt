@@ -10,8 +10,9 @@ lazy val root = (project in file("."))
     name := "heptathlon",
     resolvers += "jitpack" at "https://jitpack.io",
     libraryDependencies ++= Seq(
-      "com.raquo"                        %%% "laminar"       % "0.14.2",
-      "org.scalameta"                    %%% "munit"         % "0.7.29" % Test
+      "com.raquo"     %%% "laminar"  % "0.14.2",
+      "com.raquo"     %%% "domtypes" % "0.15.1",
+      "org.scalameta" %%% "munit"    % "0.7.29" % Test
     )
   )
 
