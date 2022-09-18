@@ -4,6 +4,7 @@ import scala.math.{floor, pow}
 import scala.util.Try
 import scala.util.Failure
 import scala.util.Success
+import org.scalajs.dom.intl.NumberFormat
 
 object Events {
 
@@ -21,7 +22,7 @@ object Events {
   }
 
   def pointsHelper(in: String, event: Event): Long =
-    Try(in.toDouble).filter(_ != 0.0).map(event.points).getOrElse(0L)
+    Try(in.replace(',', '.').toDouble).filter(_ != 0.0).map(event.points).getOrElse(0L)
 
   def EightHundredPointsHelper(in: String): Long = in.split(":") match {
     case arr if arr.length > 2 => 0L

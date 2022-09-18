@@ -20,7 +20,7 @@ object App {
           maxAttr(event.max.map(_.toString()).getOrElse("")),
           width("6rem"),
           typ("text"),
-          inputMode("numeric"),
+          lang("en-150"),
           onInput.mapToValue
             .map(_.filter(c => Character.isDigit(c) || c == ':' || c == '.'))
             .setAsValue
@@ -32,8 +32,9 @@ object App {
           maxAttr(event.max.map(_.toString()).getOrElse("")),
           stepAttr("0.01"),
           width("6rem"),
-          typ("number"),
+          typ("text"),
           inputMode("decimal"),
+          lang("en-150"),
           onInput.mapToValue.map(s => pointsHelper(s, event)) --> inputVar
         )
     }
