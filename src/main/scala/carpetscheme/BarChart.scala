@@ -18,7 +18,7 @@ object BarChart {
   val colours                        = List("#864b17", "#fc8810", "#edd41a", "#f9f171", "#98c25f", "#5d913b", "#fc6515")
   val colourMap: Map[String, String] = (blocks zip colours).toMap
 
-  def xScale(athletes: List[String]): d3scale.BandScale = d3
+  def xScale(athletes: List[String]): d3scale.BandScale[String, Int] = d3
     .scaleBand()
     .domain(athletes.toJSArray)
     .range(js.Array(0, width))
@@ -29,7 +29,7 @@ object BarChart {
     .domain(js.Array(0, 8000))
     .range(js.Array(height, 0))
 
-  def buildChart(xScale: d3scale.BandScale): d3selection.Selection[EventTarget] = {
+  def buildChart(xScale: d3scale.BandScale[String, Int]): d3selection.Selection[EventTarget] = {
 
     val svg = d3
       .select("#main")
@@ -87,7 +87,7 @@ object BarChart {
 
   def update(
       svg: d3selection.Selection[EventTarget],
-      xScale: d3scale.BandScale,
+      xScale: d3scale.BandScale[String, Int],
       results: Seq[AthleteResult]
   ): Unit = {
 

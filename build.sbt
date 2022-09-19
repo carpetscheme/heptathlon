@@ -10,10 +10,11 @@ lazy val root = (project in file("."))
     name := "heptathlon",
     resolvers += "jitpack" at "https://jitpack.io",
     libraryDependencies ++= Seq(
-      "com.raquo"     %%% "laminar"  % "0.14.2",
-      "com.raquo"     %%% "domtypes" % "0.15.1",
-      "be.doeraene"   %%% "url-dsl"  % "0.4.0",
-      "org.scalameta" %%% "munit"    % "0.7.29" % Test
+      "com.raquo"                        %%% "laminar"       % "0.14.2",
+      "com.raquo"                        %%% "domtypes"      % "0.15.1",
+      "be.doeraene"                      %%% "url-dsl"       % "0.4.0",
+      "com.github.fdietze.scala-js-d3v4" %%% "scala-js-d3v4" % "38364d6",
+      "org.scalameta"                    %%% "munit"         % "0.7.29" % Test
     )
   )
 
